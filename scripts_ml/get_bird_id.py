@@ -36,6 +36,7 @@ For testing through python, change and run this code.
 import numpy as np
 import tensorflow as tf
 import sys
+import os
 
 imagePath = sys.argv[1]
 modelFullPath = '/home/birdbook/models/output_graph.pb'
