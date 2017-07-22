@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block body %}
+<h1>Birdybook</h1>
+
+<div class="ui input">
+    <img src="data:image/png;base64,{{image}}"/>
+    <form enctype="multipart/form-data" method="post" action="/">
+    {% csrf_token %}
+        {{form}}
+        <button type="submit" class="ui button">Submit</button>
+    </form>
+</div>
+{% endblock %} 
