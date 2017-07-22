@@ -39,8 +39,13 @@ import sys
 import os
 
 imagePath = sys.argv[1]
-modelFullPath = '/home/birdbook/models/output_graph.pb'
-labelsFullPath = '/home/birdbook/models/output_labels.txt'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+modelFullPath = script_dir + '/output_graph.pb'
+labelsFullPath = script_dir + '/output_labels.txt'
+
+
+def bird_test():
+    print("Sexy ass shit")
 
 
 def create_graph():
@@ -52,20 +57,20 @@ def create_graph():
         _ = tf.import_graph_def(graph_def, name='')
 
 
-def run_inference_on_image():
+def run_inference_on_image(image_data):
     answer = None
 
-    if not tf.gfile.Exists(imagePath):
-        tf.logging.fatal('File does not exist %s', imagePath)
-        return answer
+    # if not tf.gfile.Exists(imagePath):
+    #     tf.logging.fatal('File does not exist %s', imagePath)
+    #     return answer
 
-    image_data = tf.gfile.FastGFile(imagePath, 'rb').read()
+    # image_data = tf.gfile.FastGFile(imagePath, 'rb').read()
 
     # Creates graph from saved GraphDef.
     create_graph()
 
     with tf.Session() as sess:
-
+        print("Inside the script")
         softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
         predictions = sess.run(softmax_tensor,
                                {'DecodeJpeg/contents:0': image_data})

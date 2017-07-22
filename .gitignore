@@ -1,4 +1,5 @@
-models/*
+*.pb
+output_labels.txt
 .vscode/
 media/storage/
 # Created by https://www.gitignore.io/api/django,python
