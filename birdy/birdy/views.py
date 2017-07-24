@@ -10,9 +10,10 @@ def index(request):
     # bird_id.bird_test()
     if request.method == 'POST':
         image = request.FILES['file']
-        result = bird_id.run_inference_on_image(image.read())
-        image.seek(0)
-        image = base64.b64encode(image.read())
+        result = bird_id.run_inference_on_image(image.read()).title()
+        # image.seek(0)
+        # image = base64.b64encode(image.read())
+        print(result)
         return HttpResponse(result)
         # return render(request, 'birdy/index.html', {'result': result})
 

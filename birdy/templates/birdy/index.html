@@ -3,6 +3,7 @@
 {% block style %}
 <style>
     .dropzone{
+        border-radius:1.8em;
         border:3px dashed black;
         width:75%;
     }
@@ -30,12 +31,18 @@
 
 <script src="{% static 'js/dropzone.min.js' %}"></script>
 <script>
-    // "myAwesomeDropzone" is the camelized version of the HTML element's ID
+   // "myAwesomeDropzone" is the camelized version of the HTML element's ID
 Dropzone.options.myAwesomeDropzone = {
+      init: function() {
+    this.on("success", function(file, responseText) {
+      // Handle the responseText here. For example, add the text to the preview element:
+      <!-- responseText = camelize(responseText); -->
+      file.previewTemplate.appendChild(document.createTextNode(responseText));
+    });
+  },
   paramName: "file", // The name that will be used to transfer the file
   maxFilesize: 100, // MB
   acceptedFiles:"image/*",
-  addRemoveLinks: "yes",
   dictDefaultMessage: "Drop your bird images here",
   accept: function(file, done) {
     if (file.name == "justinbieber.jpg") {
@@ -43,9 +50,7 @@ Dropzone.options.myAwesomeDropzone = {
     }
     else { done(); }
   },
-   success: function(file){
-      alert(file.name);
-  }, 
+ 
 };
 
  function readURL(input) {
