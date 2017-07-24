@@ -1,59 +1,68 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 {% block style %}
-.file-upload {
-	position: relative;
-	display: inline-block;
-}
-
-.file-upload__label {
-  display: block;
-  padding: 1em 2em;
-  color: #fff;
-  background: #222;
-  font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
-    font-weight:700;
-  &:hover {
-     background-color: #000;
-    background-image: none;
-    box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgba(34,36,38,.15) inset;
-    color: #e6e6e6;
-  }
-}
-    
-.file-upload__input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width:0;
-    height: 100%;
-    opacity: 0;
-    
-}
+<style>
+    .dropzone{
+        border:3px dashed black;
+        width:75%;
+    }
+    .dz-message{
+        font-size:2em;
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight:500;
+    }
+</style>
 {% endblock %}
 {% block body %}
 
+    <div class=" ui centered grid">
+        <div class="three wide column"></div>
+        <div class="thirteen wide column">
+    <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
+        {% csrf_token %} </form>
 
+</div>
+</div>
 
-{% if form %}
-<div class ="colum">
-    
-<form class="ui form" enctype="multipart/form-data" method="post" action="/">
-     {% csrf_token %} <br>
-    <div class="ui centered file-upload">
-        <label for="upload" class="file-upload__label">Choose the picture you want to look up</label>
-        <input id="upload" class="file-upload__input" accept="image/*" type="file" name="bird_image">
-    </div><br><br>
-    <button type="submit" class="ui button">Submit</button>
-</form>
-</div>
-{% else %}
-<div class="ui vertical center aligned grid">
-  <div class="column"><br><h1>{{ result|title }}</h1><br>
-<img class="ui large bordered centered image" src="data:image/png;base64,{{image}}" />
-</div>
-</div>
-{% endif %}
 
 {% endblock %}
+{% block script %}
+
+<script src="{% static 'js/dropzone.min.js' %}"></script>
+<script>
+    // "myAwesomeDropzone" is the camelized version of the HTML element's ID
+Dropzone.options.myAwesomeDropzone = {
+  paramName: "file", // The name that will be used to transfer the file
+  maxFilesize: 100, // MB
+  acceptedFiles:"image/*",
+  addRemoveLinks: "yes",
+  dictDefaultMessage: "Drop your bird images here",
+  accept: function(file, done) {
+    if (file.name == "justinbieber.jpg") {
+      done("Naha, you don't.");
+    }
+    else { done(); }
+  },
+   success: function(file){
+      alert(file.name);
+  }, 
+};
+
+ function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    $("#upload").change(function(){
+        readURL(this);
+    });
+    </script>
+{% endblock %}
+
