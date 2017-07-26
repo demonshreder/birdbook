@@ -1,6 +1,6 @@
 # URL & shortcuts
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 # from intelligence import bird_id
 import tensorflow as tf
 import base64
@@ -8,6 +8,7 @@ import numpy as np
 import sys
 import os
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 imagePath = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 modelFullPath = script_dir + '/intelligence/output_graph.pb'
@@ -25,7 +26,7 @@ sess = tf.Session()
 def run_inference_on_image(image_data):
     answer = None
 
-    print("Inside the script")
+    # print("Inside the script")
     softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
     predictions = sess.run(softmax_tensor,
                            {'DecodeJpeg/contents:0': image_data})
@@ -38,21 +39,19 @@ def run_inference_on_image(image_data):
     for node_id in top_k:
         human_string = labels[node_id]
         score = predictions[node_id]
-        print('%s (score = %.5f)' % (human_string, score))
-
-    answer = labels[top_k[0]]
-    return answer
+        # print('%s (score = %.5f)' % (human_string, score))
+    result = {}
+    result['bird'] = labels[top_k[0]].title()
+    result['score'] = str(predictions[top_k[0]])
+    print(result)
+    return result
 
 
 def index(request):
-    # bird_id.bird_test()
     if request.method == 'POST':
         image = request.FILES['file']
-        result = run_inference_on_image(image.read()).title()
-        # image.seek(0)
-        # image = base64.b64encode(image.read())
-        print(result)
-        return HttpResponse(result)
+        result = run_inference_on_image(image.read())
+        return JsonResponse(result)
         # return render(request, 'birdy/index.html', {'result': result})
 
     else:
