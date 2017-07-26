@@ -32,7 +32,7 @@ def run_inference_on_image(image_data):
     predictions = np.squeeze(predictions)
 
     top_k = predictions.argsort()[-5:][::-1]  # Getting top 5 predictions
-    f = open(labelsFullPath, 'rb')
+    f = open(labelsFullPath, 'r')
     lines = f.readlines()
     labels = [str(w).replace("\n", "") for w in lines]
     for node_id in top_k:
