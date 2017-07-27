@@ -1,10 +1,22 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block style %}
-<link href="{% static 'slick/slick.css' %}" rel="stylesheet">
-
-<link href="{% static 'slick/slick-theme.css' %}" rel="stylesheet">
 <style>
+    .display-left {
+    position: absolute;
+  
+    left: 0%;
+    transform: translate(0%,-50%);
+    }
+    .display-right {
+    position: absolute;
+  
+    right: 20%;
+    transform: translate(0%,-50%);
+    }
+    .slider{
+        width:75%;
+    }
     .dropzone{
         border-radius:1.8em;
         border:3px dashed black;
@@ -16,48 +28,76 @@
         font-weight:500;
     }
 </style>
-{% endblock %}
-{% block body %}
-
-    <div class=" ui centered grid">
-        <div class="three wide column"></div>
-        <div class="thirteen wide column">
-    <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
-        {% csrf_token %} </form>
-
+{% endblock %} {% block body %}
+<div class=" ui centered grid">
+    <div class="three wide column"></div>
+<div class="ui thirteen wide column">
+        <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
+            {% csrf_token %} </form>
+    <div class="slider" style="display:none;">
+<button class="ui button display-left" onclick="change(-1)">&#10094;</button>
+<button class="ui button display-right" onclick="change(+1)">&#10095;</button>
+    </div>
+    </div>
+  
 </div>
-</div>
-
 
 {% endblock %}
 {% block script %}
 
-<script src="{% static 'js/dropzone.min.js' %}"></script>
-
-<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
-<script src="{% static 'slick/slick.min.js' %}"></script>
+<script  type="text/javascript" src="{% static 'js/jquery-3.1.1.min.js' %}"></script> 
+<script  type="text/javascript" src="{% static 'js/dropzone.min.js' %}"></script>
 <script>
-   // "myAwesomeDropzone" is the camelized version of the HTML element's ID
-Dropzone.options.myAwesomeDropzone = {
-      init: function() {
-    this.on("success", function(file, responseText) {
-      // Handle the responseText here. For example, add the text to the preview element:
-      console.log(responseText)
-      file.previewTemplate.appendChild(document.createTextNode(responseText['bird'])); 
-    });
-  },
-  paramName: "file", // The name that will be used to transfer the file
-  maxFilesize: 100, // MB
-  acceptedFiles:"image/*",
-  dictDefaultMessage: "Drop your bird images here or click here to browse",
-  accept: function(file, done) {
-    if (file.name == "justinbieber.jpg") {
-      done("Naha, you don't.");
-    }
-    else { done(); }
-  },
- 
-};
+    var count = 1;
+    var no = 1;
+    var color = '#000000';
+    var message = '';
+   function change(n){
+       $('#image_'+no).hide();
+       no += n;
+       if (no <= 1){no = count;}
+       if (no >= count){no = 1;}
+       $('#image_'+no).show();
+   }
+    // Dropzone init and config
+        Dropzone.options.myAwesomeDropzone = {
+            init: function () {
+                this.on("queuecomplete", function (file) {
+                    setTimeout(function () {
+                        $('.dropzone').hide();
+                        $('div.slider').show();
+                        $('#image_1').show();;
+                    }, 1500);
+
+                });
+                this.on("success", function (file, responseText) {
+                    // Handle the responseText here. For example, add the text to the preview element:
+                    var score = responseText['score'];
+                    var bird = responseText['bird'];
+                    //if (score < 0.1){message='Sorry we are not really sure about this bird.'; color='#b50000'}
+                    //else if (score > 0.1 && score < 0.2){message='This picture has good chance of being identified correctly.'; color='#b7ad01'}
+                  //  else if (score > 0.2){message='This image has been correctly identified.'; color='#01b701'}
+                    //score = String(score)
+                    console.log(file)
+                    file.previewTemplate.appendChild(document.createTextNode(bird));
+                    $('div.slider').append("<div id='image_" + count
+                        + "' style='text-align:center;display:none;'><h3>"
+                        + bird + "</h3>" 
+                       // + <p style='color:"
+                        //+ color + "'>" + score + "<br>" + message + 
+                        //+ "</p><br>
+                        +"<img class='ui large image centered' src='"
+                        + file.dataURL + "' /></div>");
+                    count++;
+                });
+            },
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 100, // MB
+            acceptedFiles: "image/*",
+            dictDefaultMessage: "Drop your bird images here or click here to browse",
+
+
+        };
 
  function readURL(input) {
         if (input.files && input.files[0]) {
@@ -72,8 +112,6 @@ Dropzone.options.myAwesomeDropzone = {
     }
 
 
-$(document).ready(function(){
-  $('.your-class').slick({});
-    </script>
+</script>
 {% endblock %}
 

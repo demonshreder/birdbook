@@ -43,7 +43,7 @@ def run_inference_on_image(image_data):
     result = {}
     result['bird'] = labels[top_k[0]].title()
     result['score'] = str(predictions[top_k[0]])
-    print(result)
+    # print(result)
     return result
 
 
