@@ -1,6 +1,7 @@
 # URL & shortcuts
 from django.shortcuts import render, redirect, get_object_or_404, render_to_response
 from django.http import HttpResponse, JsonResponse
+from birdy.models import Bird
 # from intelligence import bird_id
 import tensorflow as tf
 import base64
@@ -43,6 +44,8 @@ def run_inference_on_image(image_data):
     result = {}
     result['bird'] = labels[top_k[0]].title()
     result['score'] = str(predictions[top_k[0]])
+    bird = Bird.objects.get(name__icontains=result['bird'])
+    result['desc'] = bird.desc
     # print(result)
     return result
 

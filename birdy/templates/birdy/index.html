@@ -2,7 +2,10 @@
 {% load staticfiles %}
 {% block style %}
 <style>
-    .display-left {
+    .slider_img{
+        width:200px;
+    }
+    {% comment %} .display-left {
     position: absolute;
     top: 50%;
     left: 0%;
@@ -13,7 +16,7 @@
     top: 50%;
     right: 20%;
     transform: translate(0%,-50%);
-    }
+    } {% endcomment %}
     .slider{
         width:75%;
     }
@@ -36,17 +39,27 @@
 <div class="ui">
 </div>
 <div class=" ui centered grid">
-    <div class="three wide column"></div>
+<div class="three wide column"></div>
 <div class="ui thirteen wide column">
         <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
             {% csrf_token %} </form>
-    <div class="slider" style="display:none;">
-
-<button class="ui button display-left" onclick="change(-1)" >&#10094;</button>
-<button class="ui button display-right" onclick="change(+1)" >&#10095;</button>
+</div>
+<div class="row">
+    <div class="column slider_key" style="display:none;">
+        <button class="ui button display-left" onclick="change(-1)">&#10094;</button>
     </div>
+    <div class="ui six wide column">
+        <div class="slider" style="display:none;">
+        </div>
     </div>
-  
+    <div class="ui six wide column">
+         <div class="slider2" style="display:none;">
+        </div>
+    </div>
+    <div class="column slider_key" style="display:none;">
+        <button class="ui button display-right" onclick="change(+1)">&#10095;</button>
+    </div>
+</div>
 </div>
 
 {% endblock %}
@@ -61,10 +74,12 @@
     var message = '';
    function change(n){
        $('#image_'+no).hide();
+       $('#text_'+no).hide();
        no += n;
        if (no <= 1){no = count;}
        if (no >= count){no = 1;}
        $('#image_'+no).show();
+       $('#text_'+no).show();
    }
     // Dropzone init and config
         Dropzone.options.myAwesomeDropzone = {
@@ -73,9 +88,15 @@
                     setTimeout(function () {
                         $('.dropzone').hide();
                         $('div.slider').show();
+                        $('div.slider2').show();
                         $('.display-left').show();
                         $('.display-right').show();
-                        $('#image_1').show();;
+                        $('#image_1').show();
+                        $('#text_1').show();
+                        if (count > 2){
+
+                        $('.slider_key').show();
+                        }
                     }, 1500);
 
                 });
@@ -83,18 +104,22 @@
                     // Handle the responseText here. For example, add the text to the preview element:
                     var score = responseText['score'];
                     var bird = responseText['bird'];
+                    var desc = responseText['desc'];
                     if (score < 0.1){message='Sorry we are not really sure about this bird.'; color='#db2828;'}
                     else if (score > 0.1 && score < 0.2){message='This picture has good chance of being identified correctly.'; color='#cd9903;'}
                     else if (score > 0.2){message='This image has been correctly identified.'; color='#198f35;'}
                     score = String(score)
-                    console.log(file)
+                    console.log(responseText)
                     file.previewTemplate.appendChild(document.createTextNode(bird));
                     $('div.slider').append("<div id='image_" + count
-                        + "' style='text-align:center;display:none;'><h3>"
+                        + "' style='text-align:center;display:none;'>"
+                        +"<img class='ui slider_img image centered' src='"+ file.dataURL + "' /></div>");
+                    $('div.slider2').append("<div id='text_" + count 
+                        +  "' style='text-align:center;display:none;'><h3>"
                         + bird + "</h3>" 
                         + "<p style='color:"
-                        + color + "'>" + message + "</p><br>"
-                        +"<img class='ui small image centered' src='"+ file.dataURL + "' /></div>");
+                        + color + "'>" + message + "</p><br><p>" 
+                        + desc + "</p></div>" )
                     count++;
                 });
             },
