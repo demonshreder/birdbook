@@ -4,13 +4,13 @@
 <style>
     .display-left {
     position: absolute;
-  
+    top: 50%;
     left: 0%;
     transform: translate(0%,-50%);
     }
     .display-right {
     position: absolute;
-  
+    top: 50%;
     right: 20%;
     transform: translate(0%,-50%);
     }
@@ -27,16 +27,23 @@
         font-family: 'Josefin Sans', sans-serif;
         font-weight:500;
     }
+    .image{
+        border-radius:1.5em;
+    }
 </style>
 {% endblock %} {% block body %}
+
+<div class="ui">
+</div>
 <div class=" ui centered grid">
     <div class="three wide column"></div>
 <div class="ui thirteen wide column">
         <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
             {% csrf_token %} </form>
     <div class="slider" style="display:none;">
-<button class="ui button display-left" onclick="change(-1)">&#10094;</button>
-<button class="ui button display-right" onclick="change(+1)">&#10095;</button>
+
+<button class="ui button display-left" onclick="change(-1)" >&#10094;</button>
+<button class="ui button display-right" onclick="change(+1)" >&#10095;</button>
     </div>
     </div>
   
@@ -66,6 +73,8 @@
                     setTimeout(function () {
                         $('.dropzone').hide();
                         $('div.slider').show();
+                        $('.display-left').show();
+                        $('.display-right').show();
                         $('#image_1').show();;
                     }, 1500);
 
@@ -74,20 +83,18 @@
                     // Handle the responseText here. For example, add the text to the preview element:
                     var score = responseText['score'];
                     var bird = responseText['bird'];
-                    //if (score < 0.1){message='Sorry we are not really sure about this bird.'; color='#b50000'}
-                    //else if (score > 0.1 && score < 0.2){message='This picture has good chance of being identified correctly.'; color='#b7ad01'}
-                  //  else if (score > 0.2){message='This image has been correctly identified.'; color='#01b701'}
-                    //score = String(score)
+                    if (score < 0.1){message='Sorry we are not really sure about this bird.'; color='#db2828;'}
+                    else if (score > 0.1 && score < 0.2){message='This picture has good chance of being identified correctly.'; color='#cd9903;'}
+                    else if (score > 0.2){message='This image has been correctly identified.'; color='#198f35;'}
+                    score = String(score)
                     console.log(file)
                     file.previewTemplate.appendChild(document.createTextNode(bird));
                     $('div.slider').append("<div id='image_" + count
                         + "' style='text-align:center;display:none;'><h3>"
                         + bird + "</h3>" 
-                       // + <p style='color:"
-                        //+ color + "'>" + score + "<br>" + message + 
-                        //+ "</p><br>
-                        +"<img class='ui large image centered' src='"
-                        + file.dataURL + "' /></div>");
+                        + "<p style='color:"
+                        + color + "'>" + message + "</p><br>"
+                        +"<img class='ui small image centered' src='"+ file.dataURL + "' /></div>");
                     count++;
                 });
             },
