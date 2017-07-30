@@ -1,5 +1,8 @@
-import os
-script_dir = os.path.dirname(os.path.abspath(__file__))
-abs_file_path = os.path.join(script_dir, rel_path)
-# print(abs_file_path)
-print(script_dir)
+import wikipedia
+from birdy.models import Bird
+
+a = Bird.objects.all()
+
+for i in a:
+    b = wikipedia.page(i.name)
+    i.url = b.url

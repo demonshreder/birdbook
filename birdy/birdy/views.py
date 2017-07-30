@@ -21,16 +21,15 @@ with tf.gfile.FastGFile(modelFullPath, 'rb') as f:
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
 
-sess = tf.Session()
+sess1 = tf.Session()
 
 
 def run_inference_on_image(image_data):
     answer = None
 
-    # print("Inside the script")
-    softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
-    predictions = sess.run(softmax_tensor,
-                           {'DecodeJpeg/contents:0': image_data})
+    softmax_tensor = sess1.graph.get_tensor_by_name('final_result:0')
+    predictions = sess1.run(softmax_tensor,
+                            {'DecodeJpeg/contents:0': image_data})
     predictions = np.squeeze(predictions)
 
     top_k = predictions.argsort()[-5:][::-1]  # Getting top 5 predictions
@@ -46,6 +45,7 @@ def run_inference_on_image(image_data):
     result['score'] = str(predictions[top_k[0]])
     bird = Bird.objects.get(name__icontains=result['bird'])
     result['desc'] = bird.desc
+    result['url'] = bird.url
     # print(result)
     return result
 
@@ -65,3 +65,7 @@ def bird_list(request):
     name_list = Bird.objects.values('name')
     count = Bird.objects.count()
     return render(request, 'birdy/list.html', {'list': name_list, 'count': count})
+
+
+def about(request):
+    return render(request, 'birdy/about.html')

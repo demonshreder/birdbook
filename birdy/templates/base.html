@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300" rel="stylesheet">
 <link href="{% static 'semantic/semantic.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/dropzone.min.css' %}" rel="stylesheet">
+<link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
 <title>Birdbook</title> 
   
   {% block head %}
@@ -55,7 +56,8 @@ Take a short survey</a></p>
 {% block script %}
 {% endblock%}
 <div class="ui centered grid container" id="bb_footer" style="margin-top:14em">  
-<small style="font-size:0.5em;">Birdbook logo &copy; The Noun Project. <br>Bird description powered by Wikipedia under CC-BY-SA 3.0.</small>
+  
+ <a href="{% url 'about' %}" style="color:#000000"><small>About</small></a>
 </div>
 
 </body>
