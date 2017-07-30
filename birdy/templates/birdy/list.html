@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block body %}
+
+<div class=" ui centered grid" style="font-size:15px;text-align:left;">
+    
+<ul>
+    <h3>We currently have {{count}} bird species in our database.</h3><br>
+    {% for bird in list %}
+
+    <li>{{ bird.name }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

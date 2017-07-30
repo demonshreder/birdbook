@@ -59,3 +59,9 @@ def index(request):
 
     else:
         return render(request, 'birdy/index.html')
+
+
+def bird_list(request):
+    name_list = Bird.objects.values('name')
+    count = Bird.objects.count()
+    return render(request, 'birdy/list.html', {'list': name_list, 'count': count})

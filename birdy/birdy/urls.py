@@ -21,5 +21,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name="home"),
+    url(r'^bird_list/$', views.bird_list, name="bird_list"),
 
 ]
