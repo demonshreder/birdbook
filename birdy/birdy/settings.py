@@ -27,7 +27,7 @@ SECRET_KEY = DJ_SECRET
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['139.59.58.237', '127.0.0.1']
+ALLOWED_HOSTS = ['birdbook.info', '127.0.0.1']
 
 
 # Application definition

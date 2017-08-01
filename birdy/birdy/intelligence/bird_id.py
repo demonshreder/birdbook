@@ -40,8 +40,8 @@ import os
 
 imagePath = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
-modelFullPath = script_dir + '/output_graph.pb'
-labelsFullPath = script_dir + '/output_labels.txt'
+modelFullPath = script_dir + '/G2/output_graph.pb'
+labelsFullPath = script_dir + '/G2/output_labels.txt'
 
 
 def bird_test():
@@ -57,19 +57,20 @@ def create_graph():
         _ = tf.import_graph_def(graph_def, name='')
 
 
-def run_inference_on_image(image_data):
+def run_inference_on_image():
     answer = None
 
     # if not tf.gfile.Exists(imagePath):
     #     tf.logging.fatal('File does not exist %s', imagePath)
     #     return answer
 
-    # image_data = tf.gfile.FastGFile(imagePath, 'rb').read()
+    image_data = tf.gfile.FastGFile(imagePath, 'rb').read()
 
     # Creates graph from saved GraphDef.
     create_graph()
 
     with tf.Session() as sess:
+        # print(sess.graph.get_operations())
         print("Inside the script")
         softmax_tensor = sess.graph.get_tensor_by_name('final_result:0')
         predictions = sess.run(softmax_tensor,
@@ -81,6 +82,7 @@ def run_inference_on_image(image_data):
         lines = f.readlines()
         labels = [str(w).replace("\n", "") for w in lines]
         for node_id in top_k:
+            # Just to print shit
             human_string = labels[node_id]
             score = predictions[node_id]
             print('%s (score = %.5f)' % (human_string, score))

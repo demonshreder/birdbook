@@ -12,37 +12,50 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 imagePath = sys.argv[1]
 script_dir = os.path.dirname(os.path.abspath(__file__))
-modelFullPath = script_dir + '/intelligence/output_graph.pb'
-labelsFullPath = script_dir + '/intelligence/output_labels.txt'
+modelFullPath = script_dir + '/intelligence'
+labelsFullPath = script_dir + '/intelligence'
 
 """Creates a graph from saved GraphDef file and returns a saver."""
-with tf.gfile.FastGFile(modelFullPath, 'rb') as f:
+with tf.gfile.FastGFile(modelFullPath + '/output_graph.pb', 'rb') as f:
     graph_def = tf.GraphDef()
     graph_def.ParseFromString(f.read())
     _ = tf.import_graph_def(graph_def, name='')
 
 sess1 = tf.Session()
 
+# with tf.gfile.FastGFile(modelFullPath + '2/output_graph.pb', 'rb') as g:
+#     graph_def = tf.GraphDef()
+#     graph_def.ParseFromString(f.read())
+#     _ = tf.import_graph_def(graph_def, name='')
+
+# sess2 = tf.Session()
+
 
 def run_inference_on_image(image_data):
-    answer = None
 
     softmax_tensor = sess1.graph.get_tensor_by_name('final_result:0')
-    predictions = sess1.run(softmax_tensor,
-                            {'DecodeJpeg/contents:0': image_data})
+    predictions = sess1.run(
+        softmax_tensor, {'DecodeJpeg/contents:0': image_data})
     predictions = np.squeeze(predictions)
+    pred_1 = predictions.argsort()[-5:][::-1]
+    # print(pred_1, predictions)
 
-    top_k = predictions.argsort()[-5:][::-1]  # Getting top 5 predictions
-    f = open(labelsFullPath, 'r')
+    # softmax_tensor = sess2.graph.get_tensor_by_name('final_result:0')
+    # predictions = sess2.run(
+    #     softmax_tensor, {'DecodeJpeg/contents:0': image_data})
+    # predictions = np.squeeze(predictions)
+    # pred_2 = predictions.argsort()[-5:][::-1]
+    # print(pred_2, predictions)
+
+    f = open(labelsFullPath + '/output_labels.txt', 'r')
     lines = f.readlines()
     labels = [str(w).replace("\n", "") for w in lines]
-    for node_id in top_k:
-        human_string = labels[node_id]
-        score = predictions[node_id]
-        # print('%s (score = %.5f)' % (human_string, score))
+    labels = labels[pred_1[0]]
+    score = predictions[0]
+
     result = {}
-    result['bird'] = labels[top_k[0]].title()
-    result['score'] = str(predictions[top_k[0]])
+    result['bird'] = labels.title()
+    result['score'] = str(score)
     bird = Bird.objects.get(name__icontains=result['bird'])
     result['desc'] = bird.desc
     result['url'] = bird.url

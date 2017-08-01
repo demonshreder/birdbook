@@ -39,17 +39,17 @@
     <h4 style='margin-left: 28%;'>Want to know what that bird was? </h4>  
     <form enctype="multipart/form-data" method="post" action="/" class="dropzone" id="my-awesome-dropzone">
             {% csrf_token %} </form><br>
-            <small style='margin-left: 30%;'>We do not store your images</small>
+            <small style='margin-left: 30%;'>We do not store your images.</small>
 </div>
 <div class="row">
     <div class="column slider_key" style="display:none;">
         <button class="ui button display-left" onclick="change(-1)" style="margin-top:7em;">&#10094;</button>
     </div>
-    <div class="ui four wide column">
+    <div class="ui seven wide column">
         <div class="slider" style="display:none;margin-left:3em;">
         </div>
     </div>
-    <div class="ui six wide column">
+    <div class="ui five wide column">
          <div class="slider2" style="display:none;">
         </div>
     </div>
@@ -103,7 +103,7 @@
                     var bird = responseText['bird'];
                     var desc = responseText['desc'];
                     var burl = responseText['url'];
-                    if (score < 0.1){message='Sorry we are not really sure about this bird.'; color='#db2828;'}
+                    if (score < 0.1){message='Sorry we are not really sure what this bird is.'; color='#db2828;'}
                     else if (score > 0.1 && score < 0.2){message='This picture has good chance of being identified correctly.'; color='#cd9903;'}
                     else if (score > 0.2){message='We are almost sure about this bird.'; color='#198f35;'}
                     score = String(score)
@@ -111,13 +111,13 @@
                     file.previewTemplate.appendChild(document.createTextNode(bird));
                     $('div.slider').append("<div id='image_" + count
                         + "' style='text-align:center;display:none;'>"
-                        +"<img class='ui slider_img image medium centered' src='"+ file.dataURL + "' /></div>");
+                        +"<img class='ui slider_img image large centered' src='"+ file.dataURL + "' /></div>");
                     $('div.slider2').append("<div id='text_" + count 
                         +  "' style='text-align:justify;display:none;'><h3>"
-                        + bird + "</h3><a href='" + burl + "'>Wikipedia</a><br>" 
+                        + bird + "</h3>" 
                         + "<p style='color:"
-                        + color + "'>" + message + "</p><br><p>" 
-                        + desc + "</p></div>" )
+                        + color + "'>" + message + "</p><p>" 
+                        + desc + "</p><a href='" + burl + "'>Wikipedia</a></div>" )
                     count++;
                 });
             },
